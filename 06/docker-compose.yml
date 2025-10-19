@@ -1,0 +1,20 @@
+services:
+  fastcgi-app:
+    build: .
+    networks:
+      - app-network  
+      # Не мапим порты на хост - только внутренняя сеть
+  nginx-proxy:
+    image: nginx:alpine
+    ports:
+      - "80:8080" # Мапим 8080 контейнера на 80 хоста
+    volumes:
+      - ./nginx-proxy.conf:/etc/nginx/nginx.conf
+    networks:
+      - app-network
+    depends_on:
+      - fastcgi-app
+
+networks:
+  app-network:
+    driver: bridge
